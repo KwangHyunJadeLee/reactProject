@@ -13,12 +13,24 @@ const Expenses = (props) => {
   };
 
   const filteredExpenses = props.items.filter((expenses) => {
-    if(filteredYear === ''){
-      return expenses
-    }else{
+    if (filteredYear === "") {
+      return expenses;
+    } else {
       return expenses.date.getFullYear().toString() === filteredYear;
     }
   });
+
+  let expensesContent = <p>No expenses found.</p>;
+  if (filteredExpenses.length > 0) {
+    expensesContent = filteredExpenses.map((expense) => (
+      <ExpenseItem
+        key={expense.id}
+        title={expense.title}
+        amount={expense.amount}
+        date={expense.date}
+      />
+    ));
+  }
 
   return (
     <Card className="expenses">
@@ -26,16 +38,18 @@ const Expenses = (props) => {
         selected={filteredYear}
         onChangeFilter={filterChangeHandler}
       />
-      {filteredExpenses.map((expense) => {
-        return (
+      {/* if this first condition is met, it moves on to the part after the end operatorand it then returns, that value. */}
+      {/* {filteredExpenses.length === 0 && <p>No expenses found.</p>}
+      {filteredExpenses.length > 0 &&
+        filteredExpenses.map((expense) => (
           <ExpenseItem
             key={expense.id}
             title={expense.title}
             amount={expense.amount}
             date={expense.date}
           />
-        );
-      })}
+        ))} */}
+        {expensesContent}
     </Card>
   );
 };
