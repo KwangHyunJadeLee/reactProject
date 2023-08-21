@@ -79,9 +79,9 @@ const ExpenseForm = (props) => {
 
     props.onSaveExpenseDate(expenseData);
 
-    setEnteredTitle('');            // submitted form init.
-    setEnteredAmount('');
-    setEnteredDate('');
+    setEnteredTitle(""); // submitted form init.
+    setEnteredAmount("");
+    setEnteredDate("");
   };
 
   return (
@@ -91,7 +91,7 @@ const ExpenseForm = (props) => {
           <label>Title</label>
           <input
             type="text"
-            value={enteredTitle}                // 2-way binding!
+            value={enteredTitle} // 2-way binding!
             onChange={titleChangeHandler}
           />
           {/* <input
@@ -122,6 +122,7 @@ const ExpenseForm = (props) => {
           />
         </div>
         <div className="new-expense__actions">
+          <button onClick={props.onCancelButton}>Cancel</button>
           <button type="submit">Add Expense</button>
         </div>
       </div>
