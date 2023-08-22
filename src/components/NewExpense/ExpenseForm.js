@@ -71,9 +71,25 @@ const ExpenseForm = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault(); // Prevent the default functionality (Automatically reload page)
+    
+    if(enteredTitle === ''){
+      alert("Title is empty, Please put title.");
+      return false;
+    }
+
+    if(enteredAmount === ''){
+      alert("Amout is empty, Please put Amout.");
+      return false;
+    }
+
+    if(enteredDate === ''){
+      alert("Date is empty, Please put Date.");
+      return false;
+    }
+    
     const expenseData = {
       title: enteredTitle,
-      amount: enteredAmount,
+      amount: +enteredAmount,
       date: new Date(enteredDate),
     };
 
@@ -122,7 +138,7 @@ const ExpenseForm = (props) => {
           />
         </div>
         <div className="new-expense__actions">
-          <button onClick={props.onCancelButton}>Cancel</button>
+          <button onClick={props.onCancel}>Cancel</button>
           <button type="submit">Add Expense</button>
         </div>
       </div>
