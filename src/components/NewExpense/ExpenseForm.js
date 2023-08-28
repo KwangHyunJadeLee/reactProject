@@ -1,5 +1,6 @@
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./ExpenseForm.css";
+import ErrorModal from "../UI/ErrorModal";
 
 const ExpenseForm = (props) => {
   // There are two ways to update userInput ..
@@ -9,9 +10,18 @@ const ExpenseForm = (props) => {
   // Depends on preference
   // see the syntax example below
 
-  const [enteredTitle, setEnteredTitle] = useState("");
-  const [enteredAmount, setEnteredAmount] = useState("");
-  const [enteredDate, setEnteredDate] = useState("");
+  // const [enteredTitle, setEnteredTitle] = useState("");
+  // const [enteredAmount, setEnteredAmount] = useState("");
+  // const [enteredDate, setEnteredDate] = useState("");
+
+  // Those Inputs are simply text what user puts into
+  // Which means no needed change state or something else dynamically.
+  // In that case, Using Ref can be better.
+  const titleInputRef = useRef();
+  const amountInputRef = useRef();
+  const dateInputRef = useRef();
+
+  const [error, setError] = useState();
 
   //   const [userInput, setUserInput] = useState({
   //     enteredTitle: "",
@@ -19,43 +29,43 @@ const ExpenseForm = (props) => {
   //     enteredDate: "",
   //   });
 
-  const titleChangeHandler = (event) => {
-    setEnteredTitle(event.target.value);
+  // const titleChangeHandler = (event) => {
+  //   setEnteredTitle(event.target.value);
 
-    // ************************* Alternative ways to change state ************************************************ /
-    // setUserInput({                          // In this case, the values of other objects must also be specified.
-    //   ...userInput,                         // ES6 Syntax.. all Object copy.
-    //   enteredTitle: event.target.value,     // Change only the values included in the event
-    // });
+  // ************************* Alternative ways to change state ************************************************ /
+  // setUserInput({                          // In this case, the values of other objects must also be specified.
+  //   ...userInput,                         // ES6 Syntax.. all Object copy.
+  //   enteredTitle: event.target.value,     // Change only the values included in the event
+  // });
 
-    // In the case above, it can be wrong if the state reference wrong version of state
-    // setUserInput((prevState) => {
-    //   return { ...prevState, enteredTitle: event.target.value }; // The prevState helps state keep always latest.
-    // });
+  // In the case above, it can be wrong if the state reference wrong version of state
+  // setUserInput((prevState) => {
+  //   return { ...prevState, enteredTitle: event.target.value }; // The prevState helps state keep always latest.
+  // });
 
-    // ex) It should always be used in places like the Counter example like below
-    // export default function App() {
-    //     const [counter, setCounter] = useState(0);
-    //     const counterHandler = () => {
-    //         setCounter(prevState => ++prevState);
-    //     };
-    //     return (
-    //       <div>
-    //         <p id="counter">{counter}</p>
-    //         <button onClick={counterHandler}>Increment</button>
-    //       </div>
-    //     );
-    // }
-    // *********************** //Alternative ways to change state ************************************************ /
-  };
+  // ex) It should always be used in places like the Counter example like below
+  // export default function App() {
+  //     const [counter, setCounter] = useState(0);
+  //     const counterHandler = () => {
+  //         setCounter(prevState => ++prevState);
+  //     };
+  //     return (
+  //       <div>
+  //         <p id="counter">{counter}</p>
+  //         <button onClick={counterHandler}>Increment</button>
+  //       </div>
+  //     );
+  // }
+  // *********************** //Alternative ways to change state ************************************************ /
+  //};
 
-  const amountChangeHandler = (event) => {
-    setEnteredAmount(event.target.value);
-  };
+  // const amountChangeHandler = (event) => {
+  //   setEnteredAmount(event.target.value);
+  // };
 
-  const dateChangeHandler = (event) => {
-    setEnteredDate(event.target.value);
-  };
+  // const dateChangeHandler = (event) => {
+  //   setEnteredDate(event.target.value);
+  // };
 
   //  There's another way to define Handler function at once.
   //  identifier and value should be defined in DOM
@@ -71,22 +81,36 @@ const ExpenseForm = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault(); // Prevent the default functionality (Automatically reload page)
-    
-    if(enteredTitle === ''){
-      alert("Title is empty, Please put title.");
-      return false;
+
+    const enteredTitle = titleInputRef.current.value;
+    const enteredAmount = amountInputRef.current.value;
+    const enteredDate = dateInputRef.current.value;
+
+    // Validation Check
+    if (enteredTitle === "") {
+      setError({
+        title: "Invalid input",
+        message: "Plesas enter a valid title (non-empty values).",
+      });
+      return;
     }
 
-    if(enteredAmount === ''){
-      alert("Amout is empty, Please put Amout.");
-      return false;
+    if (enteredAmount === "") {
+      setError({
+        title: "Invalid input",
+        message: "Plesas enter a valid amout (non-empty values).",
+      });
+      return;
     }
 
-    if(enteredDate === ''){
-      alert("Date is empty, Please put Date.");
-      return false;
+    if (enteredDate === "") {
+      setError({
+        title: "Invalid input",
+        message: "Plesas enter a valid date (non-empty values).",
+      });
+      return;
     }
-    
+
     const expenseData = {
       title: enteredTitle,
       amount: +enteredAmount,
@@ -95,54 +119,74 @@ const ExpenseForm = (props) => {
 
     props.onSaveExpenseDate(expenseData);
 
-    setEnteredTitle(""); // submitted form init.
-    setEnteredAmount("");
-    setEnteredDate("");
+    // setEnteredTitle(""); // submitted form init.
+    // setEnteredAmount("");
+    // setEnteredDate("");
+
+    titleInputRef.current.value = "";
+    amountInputRef.current.value = "";
+    dateInputRef.current.value = "";
+  };
+
+  const errorHandler = () => {
+    setError(null);
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <div className="new-expense__controls">
-        <div className="new-expense__control">
-          <label>Title</label>
-          <input
-            type="text"
-            value={enteredTitle} // 2-way binding!
-            onChange={titleChangeHandler}
-          />
-          {/* <input
+    <React.Fragment>
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
+        />
+      )}
+      <form onSubmit={submitHandler}>
+        <div className="new-expense__controls">
+          <div className="new-expense__control">
+            <label>Title</label>
+            <input
+              type="text"
+              // value={enteredTitle} // 2-way binding!
+              // onChange={titleChangeHandler}
+              ref={titleInputRef}
+            />
+            {/* <input
           type="text"
           onChange={(event) => {
             inputChangeHandler("title", event.target.value);
           }}
         /> */}
+          </div>
+          <div className="new-expense__control">
+            <label>Amount</label>
+            <input
+              type="number"
+              min="0.01"
+              step="0.01"
+              // value={enteredAmount}
+              // onChange={amountChangeHandler}
+              ref={amountInputRef}
+            />
+          </div>
+          <div className="new-expense__control">
+            <label>Date</label>
+            <input
+              type="date"
+              min="2019-01-01"
+              max="2023-12-31"
+              // value={enteredDate}
+              // onChange={dateChangeHandler}
+              ref={dateInputRef}
+            />
+          </div>
+          <div className="new-expense__actions">
+            <button onClick={props.onCancel}>Cancel</button>
+            <button type="submit">Add Expense</button>
+          </div>
         </div>
-        <div className="new-expense__control">
-          <label>Amount</label>
-          <input
-            type="number"
-            min="0.01"
-            step="0.01"
-            value={enteredAmount}
-            onChange={amountChangeHandler}
-          />
-        </div>
-        <div className="new-expense__control">
-          <label>Date</label>
-          <input
-            type="date"
-            min="2019-01-01"
-            max="2023-12-31"
-            value={enteredDate}
-            onChange={dateChangeHandler}
-          />
-        </div>
-        <div className="new-expense__actions">
-          <button onClick={props.onCancel}>Cancel</button>
-          <button type="submit">Add Expense</button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </React.Fragment>
   );
 };
 export default ExpenseForm;

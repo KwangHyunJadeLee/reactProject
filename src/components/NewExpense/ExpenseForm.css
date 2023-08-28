@@ -10,6 +10,7 @@
     font-weight: bold;
     margin-bottom: 0.5rem;
     display: block;
+    margin-left:3rem;
   }
   
   .new-expense__control input {
@@ -19,8 +20,12 @@
     border: 1px solid #ccc;
     width: 20rem;
     max-width: 100%;
+    margin-left:2.5rem;
   }
   
   .new-expense__actions {
     text-align: right;
+    margin-right: 1rem;
+    margin-left: 4rem;
+    margin-top: 1.5rem;
   }
