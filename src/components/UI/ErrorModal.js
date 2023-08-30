@@ -2,10 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import styles from "./ErrorModal.module.css";
 import Card from "./Card";
+import Button from "./Button";
 
 const ErrorModal = (props) => {
   const Backdrop = (props) => {
-    return <div className={styles.backdrop} onClick={props.onConfirm} />;
+    return (
+      <div
+        className={styles.backdrop}
+        onClick={props.onConfirm}
+      />
+    );
   };
 
   const ModalOverlay = (props) => {
@@ -18,7 +24,9 @@ const ErrorModal = (props) => {
           <p>{props.message}</p>
         </div>
         <footer className={styles.actions}>
-          <button className={styles.button} onClick={props.onConfirm}>Okay</button>
+          <Button className={styles.button} onClick={props.onConfirm}>
+            Okay
+          </Button>
         </footer>
       </Card>
     );
